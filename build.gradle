@@ -3,7 +3,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
-build.dependsOn dependsOn: ['generatePomFileForMavenJavaPublication']
+build.dependsOn dependsOn: ['copyPom']
 
 group = "${groupId}"
 
@@ -15,6 +15,15 @@ publishing {
     }
     repositories {
         mavenLocal()
+    }
+}
+
+task copyPom(type: Copy, dependsOn: 'generatePomFileForMavenJavaPublication') {
+    from "${project.buildDir}/publications/mavenJava"
+    into "${project.buildDir}"
+    include "pom-default.xml"
+    rename { String fileName ->
+        fileName.replace("-default", "")
     }
 }
 
