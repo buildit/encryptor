@@ -1,0 +1,31 @@
+apply plugin: 'groovy'
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+build.dependsOn dependsOn: ['generatePomFileForMavenJavaPublication']
+
+group = "${groupId}"
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.3.11'
+    compile "org.acegisecurity:acegi-security:1.0.7"
+    compile "org.apache.commons:commons-lang3:3.5"
+    testCompile "junit:junit:4.11"
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
