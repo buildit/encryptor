@@ -2,10 +2,20 @@ apply plugin: 'groovy'
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
+apply plugin: 'com.novoda.bintray-release'
 
 build.dependsOn dependsOn: ['copyPom']
 
 group = "${groupId}"
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.novoda:bintray-release:0.8.0'
+    }
+}
 
 publishing {
     publications {
@@ -16,6 +26,14 @@ publishing {
     repositories {
         mavenLocal()
     }
+}
+
+publish {
+    userOrg = 'buildit'
+    groupId = "${project.groupId}"
+    artifactId = "${project.artifactId}"
+    publishVersion = "${project.version}"
+    website = 'https://bintray.com/buildit/maven'
 }
 
 task copyPom(type: Copy, dependsOn: 'generatePomFileForMavenJavaPublication') {
