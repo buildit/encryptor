@@ -47,7 +47,6 @@ task copyPom(type: Copy, dependsOn: 'generatePomFileForMavenJavaPublication') {
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.3.11'
-    compile "org.acegisecurity:acegi-security:1.0.7"
     compile "org.apache.commons:commons-lang3:3.5"
     testCompile "junit:junit:4.11"
 }
