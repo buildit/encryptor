@@ -5,6 +5,7 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import java.nio.ByteBuffer
+import java.security.InvalidKeyException
 import java.security.SecureRandom
 
 class AESEncryptionUtils {
@@ -14,7 +15,7 @@ class AESEncryptionUtils {
     static final int AUTH_TAG_LENGTH          = 128
 
     static encrypt(String key, String plainText) {
-
+        validateKeySize(key)
         SecretKey secretKey = new SecretKeySpec(key.getBytes(), SECRET_KEY_ALGORITHM)
 
         byte[] initialisationVector = new byte[12]
@@ -35,7 +36,7 @@ class AESEncryptionUtils {
     }
 
     static decrypt(String key, String encryptedText) {
-
+        validateKeySize(key)
         byte[] decoded = decode(encryptedText)
         ByteBuffer byteBuffer = ByteBuffer.wrap(decoded)
         int initialisationVectorLength = byteBuffer.getInt()
@@ -48,6 +49,14 @@ class AESEncryptionUtils {
         cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key.getBytes(), SECRET_KEY_ALGORITHM),
                 new GCMParameterSpec(AUTH_TAG_LENGTH, initialisationVector))
         new String(cipher.doFinal(cipherText))
+    }
+
+    static void validateKeySize(String key) {
+        if (key.length() != 16 &&
+                key.length() != 24 &&
+                key.length() != 32) {
+            throw new InvalidKeyException("Key size must 16, 24 or 32 bytes long")
+        }
     }
 
     static String encode(byte[] bytes) {

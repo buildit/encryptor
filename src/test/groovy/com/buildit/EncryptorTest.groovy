@@ -1,46 +1,37 @@
 package com.buildit
 
 import org.junit.Test
-
-import java.security.InvalidKeyException
-
-import static org.hamcrest.CoreMatchers.equalTo
-import static org.junit.Assert.assertThat
+import static org.assertj.core.api.Assertions.*
 
 class EncryptorTest {
 
-    static final String AES_128_KEY        = "1234567812345678"                 // 16 bytes
-    static final String AES_192_KEY        = "123456781234567812345678"         // 24 bytes
-    static final String AES_256_KEY        = "12345678123456781234567812345678" // 32 bytes
-    static final String INVALID_LENGTH_KEY = "132456"                           // 6 bytes - wrong!
-    static final String PASSWORD           = "mysecretpassword"
+    static final String AES_128_KEY    = "1234567812345678"
+    static final String SHORT_PASSWORD = "password"
+    static final String LONG_PASSWORD  = "afgsafsdlkfjlasfdjskadfjasdljfasjdfasjdflsjdfasdjflasdjfasldjfldsjfklsjfsdfjsdlj"
 
     @Test
-    void shouldEncryptWithAes128(){
-        String encrypted = Encryptor.encrypt(AES_128_KEY, PASSWORD)
-        String decrypted = Encryptor.decrypt(AES_128_KEY, encrypted)
-
-        assertThat(decrypted as String, equalTo(PASSWORD))
+    void should_not_wrap() {
+        String encrypted = Encryptor.encrypt(AES_128_KEY, SHORT_PASSWORD)
+        assertThat(encrypted).doesNotContain(Encryptor.NEWLINE)
     }
 
     @Test
-    void shouldEncryptWithAes192(){
-        String encrypted = Encryptor.encrypt(AES_192_KEY, PASSWORD)
-        String decrypted = Encryptor.decrypt(AES_192_KEY, encrypted)
-
-        assertThat(decrypted as String, equalTo(PASSWORD))
+    void should_be_wrapped() {
+        String encrypted = Encryptor.encrypt(AES_128_KEY, LONG_PASSWORD)
+        assertThat(encrypted).contains(Encryptor.NEWLINE)
     }
 
     @Test
-    void shouldEncryptWithAes256(){
-        String encrypted = Encryptor.encrypt(AES_256_KEY, PASSWORD)
-        String decrypted = Encryptor.decrypt(AES_256_KEY, encrypted)
-
-        assertThat(decrypted as String, equalTo(PASSWORD))
+    void decrypt_with_no_wrap() {
+        String encrypted = Encryptor.encrypt(AES_128_KEY, SHORT_PASSWORD)
+        String expected = Encryptor.decrypt(AES_128_KEY, encrypted)
+        assertThat(expected).isEqualTo(SHORT_PASSWORD)
     }
 
-    @Test(expected = InvalidKeyException.class)
-    void shouldFailWithInvalidKeyLength(){
-        Encryptor.encrypt(INVALID_LENGTH_KEY, PASSWORD)
+    @Test
+    void decrypt_with_wrap() {
+        String encrypted = Encryptor.encrypt(AES_128_KEY, LONG_PASSWORD)
+        String expected = Encryptor.decrypt(AES_128_KEY, encrypted)
+        assertThat(expected).isEqualTo(LONG_PASSWORD)
     }
 }
