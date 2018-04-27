@@ -1,5 +1,6 @@
-package com.buildit
+package com.buildit.encryptor
 
+import com.buildit.encryptor.AESEncryptionUtils
 import org.apache.commons.text.WordUtils
 
 

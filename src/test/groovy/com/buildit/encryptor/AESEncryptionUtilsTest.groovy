@@ -1,9 +1,13 @@
-package com.buildit
+package com.buildit.encryptor
 
-import static org.assertj.core.api.Assertions.*
+import com.buildit.encryptor.AESEncryptionUtils
+import org.junit.Assume
+import org.junit.Before
 import org.junit.Test
 
 import java.security.InvalidKeyException
+
+import static org.assertj.core.api.Assertions.assertThat
 
 
 class AESEncryptionUtilsTest {
@@ -13,6 +17,11 @@ class AESEncryptionUtilsTest {
     static final String AES_256_KEY        = "12345678123456781234567812345678" // 32 bytes
     static final String INVALID_LENGTH_KEY = "132456"                           // 6 bytes - wrong!
     static final String PASSWORD           = "mysecretpassword"
+
+    @Before
+    void reset_metaclass() {
+        GroovySystem.metaClassRegistry.removeMetaClass(AESEncryptionUtils.class)
+    }
 
     @Test
     void encrypt_with_aes_128(){
@@ -24,6 +33,8 @@ class AESEncryptionUtilsTest {
 
     @Test
     void encrypt_with_aes_192(){
+        Assume.assumeTrue(AESEncryptionUtils.isJceInstalled())
+
         String encrypted = AESEncryptionUtils.encrypt(AES_192_KEY, PASSWORD)
         String decrypted = AESEncryptionUtils.decrypt(AES_192_KEY, encrypted)
 
@@ -32,6 +43,8 @@ class AESEncryptionUtilsTest {
 
     @Test
     void encrypt_with_aes_256(){
+        Assume.assumeTrue(AESEncryptionUtils.isJceInstalled())
+
         String encrypted = AESEncryptionUtils.encrypt(AES_256_KEY, PASSWORD)
         String decrypted = AESEncryptionUtils.decrypt(AES_256_KEY, encrypted)
 
@@ -42,4 +55,29 @@ class AESEncryptionUtilsTest {
     void should_fail_with_invalid_key_length(){
         AESEncryptionUtils.encrypt(INVALID_LENGTH_KEY, PASSWORD)
     }
+
+    @Test
+    void no_jce_aes_128() {
+        AESEncryptionUtils.metaClass.static.isJceInstalled = {
+            return false
+        }
+        AESEncryptionUtils.encrypt(AES_128_KEY, PASSWORD)
+    }
+
+    @Test(expected = InvalidKeyException.class)
+    void should_fail_no_jce_aes_192() {
+        AESEncryptionUtils.metaClass.static.isJceInstalled = {
+            return false
+        }
+        AESEncryptionUtils.encrypt(AES_192_KEY, PASSWORD)
+    }
+
+    @Test(expected = InvalidKeyException.class)
+    void should_fail_no_jce_aes_256() {
+        AESEncryptionUtils.metaClass.static.isJceInstalled = {
+            return false
+        }
+        AESEncryptionUtils.encrypt(AES_256_KEY, PASSWORD)
+    }
+
 }

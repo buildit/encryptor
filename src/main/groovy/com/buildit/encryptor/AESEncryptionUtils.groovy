@@ -1,4 +1,4 @@
-package com.buildit
+package com.buildit.encryptor
 
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
@@ -52,10 +52,17 @@ class AESEncryptionUtils {
     }
 
     static void validateKeySize(String key) {
-        if (key.length() != 16 &&
-                key.length() != 24 &&
-                key.length() != 32) {
-            throw new InvalidKeyException("Key size must 16, 24 or 32 bytes long")
+        def keyLength = key.length()
+
+        if (isJceInstalled()) {
+            if (keyLength != 16 && keyLength != 24 && keyLength != 32) {
+                throw new InvalidKeyException("Valid key sizes are: 16, 24 or 32 bytes.")
+            }
+        }
+        else {
+            if (keyLength != 16) {
+                throw new InvalidKeyException("Valid key sizes are: 16 bytes. You must have the JCE installed for stronger encryption.")
+            }
         }
     }
 
@@ -65,6 +72,10 @@ class AESEncryptionUtils {
 
     static byte[] decode(String string) {
         Base64.getDecoder().decode(string)
+    }
+
+    static boolean isJceInstalled() {
+        (Cipher.getMaxAllowedKeyLength(CIPHER_TRANSFORMATION) / 8) > 128
     }
 
 }
