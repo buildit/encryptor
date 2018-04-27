@@ -15,7 +15,7 @@ class AESEncryptionUtilsTest {
     static final String PASSWORD           = "mysecretpassword"
 
     @Test
-    void shouldEncryptWithAes128(){
+    void encrypt_with_aes_128(){
         String encrypted = AESEncryptionUtils.encrypt(AES_128_KEY, PASSWORD)
         String decrypted = AESEncryptionUtils.decrypt(AES_128_KEY, encrypted)
 
@@ -23,7 +23,7 @@ class AESEncryptionUtilsTest {
     }
 
     @Test
-    void shouldEncryptWithAes192(){
+    void encrypt_with_aes_192(){
         String encrypted = AESEncryptionUtils.encrypt(AES_192_KEY, PASSWORD)
         String decrypted = AESEncryptionUtils.decrypt(AES_192_KEY, encrypted)
 
@@ -31,7 +31,7 @@ class AESEncryptionUtilsTest {
     }
 
     @Test
-    void shouldEncryptWithAes256(){
+    void encrypt_with_aes_256(){
         String encrypted = AESEncryptionUtils.encrypt(AES_256_KEY, PASSWORD)
         String decrypted = AESEncryptionUtils.decrypt(AES_256_KEY, encrypted)
 
@@ -39,7 +39,7 @@ class AESEncryptionUtilsTest {
     }
 
     @Test(expected = InvalidKeyException.class)
-    void shouldFailWithInvalidKeyLength(){
+    void should_fail_with_invalid_key_length(){
         AESEncryptionUtils.encrypt(INVALID_LENGTH_KEY, PASSWORD)
     }
 }
