@@ -1,6 +1,5 @@
 package com.buildit.encryptor
 
-import com.buildit.encryptor.AESEncryptionUtils
 import org.junit.Assume
 import org.junit.Before
 import org.junit.Test
