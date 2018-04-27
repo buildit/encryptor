@@ -1,6 +1,5 @@
 package com.buildit.encryptor
 
-import com.buildit.encryptor.Encryptor
 import org.junit.Test
 import static org.assertj.core.api.Assertions.*
 
