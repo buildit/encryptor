@@ -60,7 +60,10 @@ class AESEncryptionUtilsTest {
         AESEncryptionUtils.metaClass.static.isJceInstalled = {
             return false
         }
-        AESEncryptionUtils.encrypt(AES_128_KEY, PASSWORD)
+        String encrypted = AESEncryptionUtils.encrypt(AES_128_KEY, PASSWORD)
+        String decrypted = AESEncryptionUtils.decrypt(AES_128_KEY, encrypted)
+
+        assertThat(decrypted as String).isEqualTo(PASSWORD)
     }
 
     @Test(expected = InvalidKeyException.class)
@@ -68,10 +71,7 @@ class AESEncryptionUtilsTest {
         AESEncryptionUtils.metaClass.static.isJceInstalled = {
             return false
         }
-        String encrypted = AESEncryptionUtils.encrypt(AES_192_KEY, PASSWORD)
-        String decrypted = AESEncryptionUtils.decrypt(AES_128_KEY, encrypted)
-
-        assertThat(decrypted as String).isEqualTo(PASSWORD)
+        AESEncryptionUtils.encrypt(AES_192_KEY, PASSWORD)
     }
 
     @Test(expected = InvalidKeyException.class)
