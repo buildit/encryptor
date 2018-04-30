@@ -31,7 +31,17 @@ class EncryptorTest {
     @Test
     void decrypt_with_wrap() {
         String encrypted = Encryptor.encrypt(AES_128_KEY, LONG_PASSWORD)
+        println(encrypted)
         String expected = Encryptor.decrypt(AES_128_KEY, encrypted)
+        assertThat(expected).isEqualTo(LONG_PASSWORD)
+    }
+
+    @Test
+    void decrypt_with_wrap_and_space_characters() {
+        String encrypted = Encryptor.encrypt(AES_128_KEY, LONG_PASSWORD)
+        String formatted = encrypted.replaceAll(/\n/, "\n       ")
+        println(formatted)
+        String expected = Encryptor.decrypt(AES_128_KEY, formatted)
         assertThat(expected).isEqualTo(LONG_PASSWORD)
     }
 }

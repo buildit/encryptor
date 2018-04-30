@@ -6,6 +6,7 @@ import org.apache.commons.text.WordUtils
 class Encryptor {
 
     static final String NEWLINE  = "\n"
+    static final String ILLEGAL_CHARACTER_REGEX  = /\n|\s/
     static final int WRAP_LENGTH = 100
 
     static encrypt(String secret, String string){
@@ -13,6 +14,6 @@ class Encryptor {
     }
 
     static decrypt(String secret, String string){
-        AESEncryptionUtils.decrypt(secret, string.replace(NEWLINE, ""))
+        AESEncryptionUtils.decrypt(secret, string.replaceAll(ILLEGAL_CHARACTER_REGEX, ""))
     }
 }
